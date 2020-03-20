@@ -1,22 +1,23 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Router, Stack, Scene} from 'react-native-router-flux';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {_storeData, _getData} from '@Component/StoreAsync';
 
 //page
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Event from './pages/Event';
 import Account from './pages/Account';
 
 const TabIcon = ({focused, iconName}) => {
-  var color = focused ? '#000' : '#fff';
+  var color = focused ? '#1530B5' : '#3D5BCA';
   return (
     <Icon
       name={iconName}
       color={color}
-      size={24}
+      size={30}
       style={{marginTop: 8}}
       textStyle={color}
     />
@@ -61,20 +62,27 @@ export default class Routes extends Component {
             key="tabbar"
             initial={this.state.hasLogin}
             hideNavBar
+            showLabel={false}
             translucent={true}
             tabs={true}
             tabBarStyle={styles.tabBar}
-            activeTintColor="#000"
-            inactiveTintColor="#000">
+            activeTintColor="#1530B5"
+            inactiveTintColor="#3D5BCA">
             <Scene
-              key="home"
+              key="Home"
               component={Home}
               navTransparent={true}
               hideNavBar={true}
-              title=""
-              tabBarLabel="Home"
-              color="#000"
               iconName="home"
+              icon={TabIcon}
+            />
+
+            <Scene
+              key="Event"
+              component={Event}
+              navTransparent={true}
+              hideNavBar={true}
+              iconName="event"
               icon={TabIcon}
             />
 
@@ -83,9 +91,7 @@ export default class Routes extends Component {
               component={Account}
               navTransparent={true}
               hideNavBar={true}
-              title=""
-              tabBarLabel="Account"
-              iconName="user"
+              iconName="person"
               icon={TabIcon}
             />
           </Scene>
@@ -100,14 +106,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    borderTopColor: '#A9A9A9',
-    backgroundColor: '#A9A9A9',
-    opacity: 0.98,
-  },
-  navigationBarStyle: {
-    backgroundColor: 'red',
-  },
-  navigationBarTitleStyle: {
-    color: 'white',
+    borderTopColor: '#1530B5',
+    borderTopWidth: 3,
+    backgroundColor: '#000',
+    opacity: 1,
   },
 });

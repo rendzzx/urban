@@ -5,29 +5,12 @@ import {
   View,
   TextInput,
   StyleSheet,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  Platform,
   ActivityIndicator,
-  ImageBackground,
-  BackHandler,
-  I18nManager,
-  Dimensions,
+  TouchableOpacity,
+  Platform,
 } from 'react-native';
 
-import {
-  Container,
-  Button,
-  Icon,
-  Right,
-  Item,
-  Input,
-  Header,
-  Left,
-  Body,
-  Title,
-} from 'native-base';
+import {Container, Icon, Content} from 'native-base';
 
 import {Actions} from 'react-native-router-flux';
 import {_storeData, _getData} from '@Component/StoreAsync';
@@ -111,12 +94,13 @@ export default class Login extends Component {
       .then(response => response.json())
       .then(res => {
         if (!res.Error) {
-          console.log(res);
-          this.signIn(res);
+          console.log('Login Success', res.Data);
+          this.signIn(res.Data);
           this.setState({isLoaded: !this.state.isLoaded});
           Actions.Home({email: res.Data.user});
         } else {
           this.setState({isLoaded: !this.state.isLoaded}, () => {
+            this.setState({isLogin: !this.state.isLogin});
             alert(res.Pesan);
           });
         }
@@ -155,53 +139,60 @@ export default class Login extends Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Logo />
-        <View>
-          <TextInput
-            style={styles.inputBox}
-            underlineColorAndroid="#A9A9A9"
-            placeholder="E-Mail"
-            placeholderTextColor="#A9A9A9"
-            selectionColor="#A9A9A9"
-            keyboardType="email-address"
-            onSubmitEditing={() => this.password.focus()}
-            returnKeyType="next"
-            autoCapitalize="none"
-            autoCorrect={false}
-            onChangeText={val => this.setState({email: val})}
-          />
-          <Icon name="envelope" type="FontAwesome5" style={styles.mail} />
-        </View>
-        <View>
-          <TextInput
-            style={styles.inputBox}
-            underlineColorAndroid="#A9A9A9"
-            placeholder="Password"
-            placeholderTextColor="#A9A9A9"
-            ref={input => (this.password = input)}
-            onChangeText={val => this.setState({password: val})}
-            autoCapitalize="none"
-            autoCorrect={false}
-            secureTextEntry={!this.state.isHide}
-            value={this.state.password}
-          />
-          <Icon
-            name={this.state.isHide ? 'eye-slash' : 'eye'}
-            type="FontAwesome5"
-            style={styles.eye}
-            onPress={() =>
-              this.setState({
-                isHide: !this.state.isHide,
-              })
-            }
-          />
-        </View>
+        <Content>
+          <Logo />
+          <View>
+            <TextInput
+              style={styles.inputBox}
+              underlineColorAndroid="#A9A9A9"
+              placeholder="E-Mail"
+              placeholderTextColor="#A9A9A9"
+              selectionColor="#A9A9A9"
+              keyboardType="email-address"
+              onSubmitEditing={() => this.password.focus()}
+              returnKeyType="next"
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={val => this.setState({email: val})}
+            />
+            <Icon name="envelope" type="FontAwesome5" style={styles.mail} />
+          </View>
+          <View>
+            <TextInput
+              style={styles.inputBox}
+              underlineColorAndroid="#A9A9A9"
+              placeholder="Password"
+              placeholderTextColor="#A9A9A9"
+              ref={input => (this.password = input)}
+              onChangeText={val => this.setState({password: val})}
+              onSubmitEditing={() => this.btnLoginClick()}
+              autoCapitalize="none"
+              autoCorrect={false}
+              secureTextEntry={!this.state.isHide}
+              value={this.state.password}
+            />
+            <Icon
+              name={this.state.isHide ? 'eye-slash' : 'eye'}
+              type="FontAwesome5"
+              style={styles.eye}
+              onPress={() =>
+                this.setState({
+                  isHide: !this.state.isHide,
+                })
+              }
+            />
+          </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.btnLoginClick()}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.btnLoginClick()}>
+            {this.state.isLogin ? (
+              <ActivityIndicator />
+            ) : (
+              <Text style={styles.buttonText}>Login</Text>
+            )}
+          </TouchableOpacity>
+        </Content>
       </Container>
     );
   }
@@ -225,7 +216,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 300,
-    backgroundColor: '#A9A9A9',
+    backgroundColor: '#3D5BCA',
     borderRadius: 25,
     marginVertical: 10,
     paddingVertical: 13,

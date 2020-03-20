@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "clean-android": "cd ./android && ./gradlew clean",
     "android": "npx jetify && react-native run-android",
     "ios": "react-native run-ios",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "clean-android": "cd ./android && ./gradlew clean",
+    "build-release": "cd ./android && ./gradlew clean && ./gradlew app:assembleRelease",
+    "bundle-release": "cd ./android && ./gradlew clean && ./gradlew bundleRelease"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.8.1",
@@ -17,12 +19,15 @@
     "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-easy-grid": "^0.2.2",
     "react-native-form-validator": "^0.3.2",
     "react-native-gesture-handler": "^1.6.0",
+    "react-native-get-location": "^1.4.2",
     "react-native-reanimated": "^1.7.0",
     "react-native-router-flux": "^4.2.0",
     "react-native-screens": "^2.2.0",
-    "react-native-vector-icons": "^6.6.0"
+    "react-native-vector-icons": "^6.6.0",
+    "react-native-webview": "^8.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
@@ -36,5 +41,10 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./src/assets/fonts"
+    ]
   }
 }
