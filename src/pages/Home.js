@@ -3,7 +3,6 @@ import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {Container} from 'native-base';
 
 import GetLocation from 'react-native-get-location';
-import Geolocation from '@react-native-community/geolocation';
 
 import {_getData} from '@Component/StoreAsync';
 
@@ -43,7 +42,12 @@ export default class Home extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'YES', onPress: () => this.absenAction()},
+        {
+          text: 'YES',
+          onPress: () => {
+            this.absenAction();
+          },
+        },
       ],
       {cancelable: true},
     );

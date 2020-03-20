@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native';
 
 import {Container, Icon, Content} from 'native-base';
@@ -17,7 +18,6 @@ import {_storeData, _getData} from '@Component/StoreAsync';
 import {urlApi} from '@Config/services';
 
 import Logo from '../components/Logo';
-let isMount = false;
 
 export default class Login extends Component {
   constructor(props) {
@@ -28,36 +28,42 @@ export default class Login extends Component {
       password: '',
       isHide: false,
       isLogin: false,
+      isMount: false,
       userDetails: '',
     };
   }
+
   async componentWillMount() {
-    isMount = true;
-    this.requestStorage();
+    this.setState({isMount: true});
   }
 
-  requestStorage = async () => {
+  async componentDidMount() {
+    const isLogin = _getData('@isLogin');
+    this.setState(isLogin);
+    this.requestPermissions();
+  }
+
+  componentWillUnmount() {
+    this.setState({isMount: false});
+  }
+
+  requestPermissions = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Urban Jakarta want to acces your storage',
-          message: 'Please be careful with agreement permissions ',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      if (Platform.OS === 'android') {
+        const userResponse = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.READ_CALENDAR,
+          PermissionsAndroid.PERMISSIONS.WRITE_CALENDAR,
+        ]);
+        return userResponse;
       }
     } catch (err) {
       console.warn(err);
     }
   };
-
-  componentWillUnmount() {
-    isMount = false;
-  }
 
   btnLoginClick = async () => {
     let mac = 'test';
@@ -71,7 +77,7 @@ export default class Login extends Component {
     };
     var lengthPass = this.state.password.length;
     if (lengthPass < 4) {
-      alert('Wrong password !!!');
+      Alert.alert('Wrong password !!!');
     } else {
       this.setState({isLogin: true}, () => {
         this.doLogin(formData);
@@ -101,14 +107,14 @@ export default class Login extends Component {
         } else {
           this.setState({isLoaded: !this.state.isLoaded}, () => {
             this.setState({isLogin: !this.state.isLogin});
-            alert(res.Pesan);
+            Alert.alert(res.Pesan);
           });
         }
       })
       .catch(error => {
         console.log(error);
         this.setState({isLoaded: !this.state.isLoaded}, () => {
-          alert(error);
+          Alert.alert(error);
         });
       });
   }
@@ -187,7 +193,7 @@ export default class Login extends Component {
             style={styles.button}
             onPress={() => this.btnLoginClick()}>
             {this.state.isLogin ? (
-              <ActivityIndicator />
+              <ActivityIndicator color="#000" />
             ) : (
               <Text style={styles.buttonText}>Login</Text>
             )}

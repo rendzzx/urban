@@ -11,7 +11,7 @@ import {
 import {Container} from 'native-base';
 import {Actions} from 'react-native-router-flux';
 
-import {_getData, _removeData} from '@Component/StoreAsync';
+import {_getData, _storeData, _removeData} from '@Component/StoreAsync';
 import {Style} from '../Themes';
 import {urlApi} from '@Config/services';
 
@@ -83,6 +83,7 @@ export default class Account extends Component {
       .then(res => {
         this.removeData();
         console.log('Logged Out');
+        _storeData('@isLogin', false);
         Actions.reset('Login');
       })
       .catch(error => {

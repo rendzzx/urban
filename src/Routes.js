@@ -1,9 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
-import {Router, Stack, Scene} from 'react-native-router-flux';
+import {Router, Scene} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {_storeData, _getData} from '@Component/StoreAsync';
+import {_getData} from '@Component/StoreAsync';
 
 //page
 import Login from './pages/Login';
