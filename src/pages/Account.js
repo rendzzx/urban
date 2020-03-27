@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -7,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import {Container} from 'native-base';
 import {Actions} from 'react-native-router-flux';
@@ -20,6 +22,7 @@ export default class Account extends Component {
     super(props);
 
     this.state = {
+      isOut: false,
       email: '',
       name: '',
       group: '',
@@ -49,13 +52,17 @@ export default class Account extends Component {
   }
 
   logout = () => {
+    this.setState({isOut: true});
     Alert.alert(
       '',
       'Are you sure want to logout this account ?',
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Logout Canceled'),
+          onPress: () => {
+            this.setState({isOut: false});
+            console.log('Logout Canceled');
+          },
           style: 'cancel',
         },
         {text: 'YES', onPress: () => this.signOut()},
@@ -81,6 +88,7 @@ export default class Account extends Component {
     })
       .then(response => response.json())
       .then(res => {
+        this.setState({isOut: false});
         this.removeData();
         console.log('Logged Out');
         _storeData('@isLogin', false);
@@ -154,7 +162,11 @@ export default class Account extends Component {
               <TouchableOpacity
                 style={styles.logoutBtn}
                 onPress={() => this.logout()}>
-                <Text style={styles.logoutBtnText}>Logout</Text>
+                {this.state.isOut ? (
+                  <ActivityIndicator color="#000" />
+                ) : (
+                  <Text style={styles.logoutBtnText}>Logout</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>

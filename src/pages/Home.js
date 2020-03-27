@@ -1,5 +1,13 @@
+/* eslint-disable react/no-did-mount-set-state */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import {Container} from 'native-base';
 
 import GetLocation from 'react-native-get-location';
@@ -11,6 +19,7 @@ export default class Home extends Component {
     super(props);
 
     this.state = {
+      isAttend: false,
       email: '',
       name: '',
       group: '',
@@ -32,33 +41,18 @@ export default class Home extends Component {
     this.setState(data);
   }
 
-  absen = () => {
-    Alert.alert(
-      'Absen',
-      'Are you want to Absen?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'YES',
-          onPress: () => {
-            this.absenAction();
-          },
-        },
-      ],
-      {cancelable: true},
-    );
+  attend = () => {
+    this.setState({isAttend: true});
+    this.attendAction();
   };
 
-  absenAction = async () => {
+  attendAction = async () => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000,
     })
       .then(location => {
+        this.setState({isAttend: false});
         console.log('latitude', location.latitude);
         console.log('longitude', location.longitude);
         let googleMapsLink =
@@ -68,6 +62,9 @@ export default class Home extends Component {
           location.longitude +
           ',21z';
         console.log('link : ', googleMapsLink);
+        Alert.alert('location', googleMapsLink, [{text: 'OK'}], {
+          cancelable: true,
+        });
       })
       .catch(error => {
         const {code, message} = error;
@@ -90,8 +87,12 @@ export default class Home extends Component {
             <View style={styles.colBtn}>
               <TouchableOpacity
                 style={styles.logoutBtn}
-                onPress={() => this.absen()}>
-                <Text style={styles.logoutBtnText}>Absen</Text>
+                onPress={() => this.attend()}>
+                {this.state.isAttend ? (
+                  <ActivityIndicator color="#000" />
+                ) : (
+                  <Text style={styles.logoutBtnText}>Presence</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
