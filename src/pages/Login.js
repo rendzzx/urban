@@ -89,8 +89,8 @@ export default class Login extends Component {
   doLogin(value) {
     this.setState({isLoaded: !this.state.isLoaded});
     let data = JSON.stringify(value);
-
-    fetch(urlApi + 'c_auth/Login', {
+    console.log('data login ', data);
+    fetch(urlApi + '/Login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -113,8 +113,9 @@ export default class Login extends Component {
         }
       })
       .catch(error => {
-        console.log(error);
+        console.log('error dologin catch ', error);
         this.setState({isLoaded: !this.state.isLoaded}, () => {
+          this.setState({isLogin: !this.state.isLogin});
           Alert.alert(error);
         });
       });

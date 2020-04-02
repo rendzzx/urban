@@ -77,7 +77,7 @@ export default class Account extends Component {
       ipAddress: '190',
       device: Platform.OS,
     };
-    fetch(urlApi + 'c_auth/Logout/' + this.state.email, {
+    fetch(urlApi + '/Logout/' + this.state.email, {
       method: 'POST',
       body: JSON.stringify(formData),
       headers: {
