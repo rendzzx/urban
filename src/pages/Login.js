@@ -67,18 +67,15 @@ export default class Login extends Component {
   };
 
   btnLoginClick = async () => {
-    let mac = 'test';
     const formData = {
       email: this.state.email,
       password: this.state.password,
-      token: '',
-      token_firebase: '',
-      device: Platform.OS,
-      mac: mac,
     };
     var lengthPass = this.state.password.length;
-    if (lengthPass < 4) {
-      Alert.alert('Wrong password !!!');
+    if (lengthPass < 1) {
+      Alert.alert('Password', 'Please Input Password', [{text: 'ok'}], {
+        cancelable: true,
+      });
     } else {
       this.setState({isLogin: true}, () => {
         this.doLogin(formData);
@@ -108,7 +105,7 @@ export default class Login extends Component {
         } else {
           this.setState({isLoaded: !this.state.isLoaded}, () => {
             this.setState({isLogin: !this.state.isLogin});
-            Alert.alert(res.Pesan);
+            Alert.alert(res.Message);
           });
         }
       })
@@ -123,18 +120,21 @@ export default class Login extends Component {
 
   signIn = async res => {
     try {
-      _storeData('@UserId', res.UserId);
+      _storeData('@UserId', res.user_id);
+      _storeData('@User', res.email);
       _storeData('@Name', res.name);
-      _storeData('@Token', res.Token);
-      _storeData('@User', res.user);
-      _storeData('@Group', res.Group);
+      _storeData('@Group', res.group_cd);
+      _storeData('@AgentCd', res.agent_cd);
+      _storeData('@Debtor', res.debtor_acct);
+
+      _storeData('@EmployeeId', res.employee_id);
       _storeData('@Handphone', res.handphone);
-      _storeData('@isLogin', this.state.isLogin);
-      _storeData('@isReset', res.isResetPass);
-      _storeData('@AgentCd', res.AgentCd);
-      _storeData('@Debtor', res.Debtor_acct);
-      _storeData('@rowID', res.rowID);
+      _storeData('@NIK', res.nik);
+      _storeData('@NPWP', res.npwp);
+      _storeData('@Division', res.division);
+      _storeData('@Postition', res.postition);
       _storeData('@RefreshProfile', false);
+      _storeData('@isLogin', this.state.isLogin);
     } catch (err) {
       console.log('error:', err);
     } finally {

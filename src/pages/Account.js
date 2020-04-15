@@ -7,7 +7,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Platform,
   ActivityIndicator,
 } from 'react-native';
 import {Container} from 'native-base';
@@ -23,30 +22,25 @@ export default class Account extends Component {
 
     this.state = {
       isOut: false,
-      email: '',
-      name: '',
-      group: '',
-      agent_cd: '',
-      debtor_acct: '',
-      userId: '',
-      token: '',
-      gender: '',
-      hp: '',
-      fotoProfil: require('@Asset/images/1.png'),
-      fotoHeader: require('@Asset/images/header.png'),
     };
   }
 
   async componentDidMount() {
     const data = {
-      email: await _getData('@User'),
       userId: await _getData('@UserId'),
+      email: await _getData('@User'),
       name: await _getData('@Name'),
       group: await _getData('@Group'),
       token: await _getData('@Token'),
-      hp: await _getData('@Handphone'),
       debtor_acct: await _getData('@Debtor'),
       agent_cd: await _getData('@AgentCd'),
+
+      employeeId: await _getData('@EmployeeId'),
+      hp: await _getData('@Handphone'),
+      nik: await _getData('@NIK'),
+      npwp: await _getData('@NPWP'),
+      division: await _getData('@Division'),
+      postition: await _getData('@Postition'),
     };
     this.setState(data);
   }
@@ -72,43 +66,27 @@ export default class Account extends Component {
   };
 
   signOut = async () => {
-    const formData = {
-      email: this.state.email,
-      ipAddress: '190',
-      device: Platform.OS,
-    };
-    fetch(urlApi + '/Logout/' + this.state.email, {
-      method: 'POST',
-      body: JSON.stringify(formData),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Token: this.state.token,
-      },
-    })
-      .then(response => response.json())
-      .then(res => {
-        this.setState({isOut: false});
-        this.removeData();
-        console.log('Logged Out');
-        _storeData('@isLogin', false);
-        Actions.reset('Login');
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    this.setState({isOut: false});
+    this.removeData();
+    console.log('Logged Out');
+    _storeData('@isLogin', false);
+    Actions.reset('Login');
   };
 
   removeData() {
     _removeData('@UserId');
-    _removeData('@Name');
-    _removeData('@Token');
     _removeData('@User');
+    _removeData('@Name');
     _removeData('@Group');
-    _removeData('@Handphone');
     _removeData('@AgentCd');
     _removeData('@Debtor');
-    _removeData('@rowID');
+
+    _removeData('@EmployeeId');
+    _removeData('@Handphone');
+    _removeData('@NIK');
+    _removeData('@NPWP');
+    _removeData('@Division');
+    _removeData('@Postition');
   }
 
   render() {
@@ -141,7 +119,9 @@ export default class Account extends Component {
             <Text style={styles.colHead}>Handphone</Text>
             <Text style={styles.colBody}>{this.state.hp}</Text>
           </View>
+
           <View style={{marginVertical: 20}} />
+
           <View style={Style.row}>
             <Text style={styles.colHead}>Group</Text>
             <Text style={styles.colBody}>{this.state.group}</Text>
@@ -155,6 +135,35 @@ export default class Account extends Component {
           <View style={Style.row}>
             <Text style={styles.colHead}>Agent Code</Text>
             <Text style={styles.colBody}>{this.state.agent_cd}</Text>
+          </View>
+
+          <View style={{marginVertical: 20}} />
+
+          <View style={Style.row}>
+            <Text style={styles.colHead}>Employee ID</Text>
+            <Text style={styles.colBody}>{this.state.employeeId}</Text>
+          </View>
+
+          <View style={Style.row}>
+            <Text style={styles.colHead}>NIK</Text>
+            <Text style={styles.colBody}>{this.state.nik}</Text>
+          </View>
+
+          <View style={Style.row}>
+            <Text style={styles.colHead}>NPWP</Text>
+            <Text style={styles.colBody}>{this.state.npwp}</Text>
+          </View>
+
+          <View style={{marginVertical: 20}} />
+
+          <View style={Style.row}>
+            <Text style={styles.colHead}>Division</Text>
+            <Text style={styles.colBody}>{this.state.division}</Text>
+          </View>
+
+          <View style={Style.row}>
+            <Text style={styles.colHead}>Postition</Text>
+            <Text style={styles.colBody}>{this.state.postition}</Text>
           </View>
 
           <View style={styles.rowBtn}>

@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  SafeAreaView,
 } from 'react-native';
 import {Container} from 'native-base';
-
+import PTRView from 'react-native-pull-to-refresh';
 import GetLocation from 'react-native-get-location';
 
 import {_getData} from '@Component/StoreAsync';
+import {urlApi} from '@Config/services';
 
 export default class Home extends Component {
   constructor(props) {
@@ -20,25 +22,32 @@ export default class Home extends Component {
 
     this.state = {
       isAttend: false,
-      email: '',
-      name: '',
-      group: '',
-      userId: '',
-      token: '',
-      hp: '',
     };
   }
 
   async componentDidMount() {
     const data = {
-      email: await _getData('@User'),
       userId: await _getData('@UserId'),
+      email: await _getData('@User'),
       name: await _getData('@Name'),
       group: await _getData('@Group'),
       token: await _getData('@Token'),
+      debtor_acct: await _getData('@Debtor'),
+      agent_cd: await _getData('@AgentCd'),
+
+      employeeId: await _getData('@EmployeeId'),
       hp: await _getData('@Handphone'),
+      nik: await _getData('@NIK'),
+      npwp: await _getData('@NPWP'),
+      division: await _getData('@Division'),
+      postition: await _getData('@Postition'),
     };
     this.setState(data);
+    const dataa = {
+      email: this.state.email,
+      employee_id: this.state.employeeId,
+    };
+    this.cekAttend(dataa);
   }
 
   attend = () => {
@@ -53,18 +62,45 @@ export default class Home extends Component {
     })
       .then(location => {
         this.setState({isAttend: false});
-        console.log('latitude', location.latitude);
-        console.log('longitude', location.longitude);
-        let googleMapsLink =
-          'https://www.google.com/maps/@' +
-          location.latitude +
-          ',' +
-          location.longitude +
-          ',21z';
-        console.log('link : ', googleMapsLink);
-        Alert.alert('location', googleMapsLink, [{text: 'OK'}], {
-          cancelable: true,
-        });
+        const dataa = {
+          email: this.state.email,
+          employee_id: this.state.employeeId,
+          latitude: location.latitude,
+          longitude: location.longitude,
+        };
+        let data = JSON.stringify(dataa);
+        console.log('data attend ', data);
+        fetch(urlApi + '/Attend', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: data,
+        })
+          .then(response => response.json())
+          .then(res => {
+            if (!res.Error) {
+              if (res.Type === 'IN') {
+                Alert.alert('Attend Successful', 'You Have Attend');
+              } else {
+                Alert.alert('Out Successful', 'You Have logout');
+              }
+              const dataa = {
+                email: this.state.email,
+                employee_id: this.state.employeeId,
+              };
+              this.cekAttend(dataa);
+              console.log('Attend Success Attend Type : ', res.Type);
+            } else {
+              Alert.alert('Error', res.Message);
+              console.log('Attend Failed, already attend ');
+            }
+          })
+          .catch(error => {
+            console.log('error dologin catch ', error);
+            Alert.alert(error);
+          });
       })
       .catch(error => {
         const {code, message} = error;
@@ -72,32 +108,122 @@ export default class Home extends Component {
       });
   };
 
+  cekAttend(value) {
+    let data = JSON.stringify(value);
+    console.log('data refresh', data);
+    fetch(urlApi + '/CekAttend', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: data,
+    })
+      .then(response => response.json())
+      .then(res => {
+        if (!res.Error) {
+          console.log(res.Data);
+          this.setState({
+            attend_id: res.Data.attend_id,
+            employee_id: res.Data.employee_id,
+            day: res.Data.day,
+            name: res.Data.name,
+            hour_in: res.Data.hour_in,
+            hour_out: res.Data.hour_out,
+            latitude: res.Data.latitude,
+            longitude: res.Data.longitude,
+            ket: res.Data.ket,
+          });
+        } else {
+          Alert.alert('No Data', res.Message);
+          this.setState({
+            dataattend: null,
+          });
+          console.log(res);
+        }
+      })
+      .catch(error => {
+        console.log('error cek attend catch ', error);
+        Alert.alert(error);
+      });
+  }
+
+  refresh = () => {
+    const data = {
+      email: this.state.email,
+      employee_id: this.state.employeeId,
+    };
+    this.cekAttend(data);
+  };
+
   render() {
     return (
-      <Container style={styles.container}>
-        <View style={styles.layout}>
-          <View style={styles.row}>
-            <View style={styles.col1}>
-              <Text style={styles.textWelcome}>Welcome</Text>
-              <Text style={styles.textName}>{this.state.name}</Text>
-            </View>
-          </View>
+      <SafeAreaView>
+        <PTRView onRefresh={this.refresh}>
+          <Container style={styles.container}>
+            <View style={styles.layout}>
+              <View style={styles.row}>
+                <View style={styles.col1}>
+                  <Text style={styles.textWelcome}>Welcome</Text>
+                  <Text style={styles.textName}>{this.state.name}</Text>
+                </View>
+              </View>
 
-          <View style={styles.rowBtn}>
-            <View style={styles.colBtn}>
-              <TouchableOpacity
-                style={styles.logoutBtn}
-                onPress={() => this.attend()}>
-                {this.state.isAttend ? (
-                  <ActivityIndicator color="#000" />
-                ) : (
-                  <Text style={styles.logoutBtnText}>Presence</Text>
-                )}
-              </TouchableOpacity>
+              <View style={styles.row}>
+                <Text style={styles.colHead}>Employee ID</Text>
+                <Text style={styles.colBody}>{this.state.employee_id}</Text>
+              </View>
+
+              <View style={{marginVertical: 20}} />
+
+              <View style={styles.row}>
+                <View style={styles.col1box}>
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Day</Text>
+                    <Text style={styles.colBody}>{this.state.day}</Text>
+                  </View>
+
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Hour IN</Text>
+                    <Text style={styles.colBody}>{this.state.hour_in}</Text>
+                  </View>
+
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Hour OUT</Text>
+                    <Text style={styles.colBody}>{this.state.hour_out}</Text>
+                  </View>
+
+                  <View style={{marginVertical: 10}} />
+
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Latitude</Text>
+                    <Text style={styles.colBody}>{this.state.latitude}</Text>
+                  </View>
+
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Longitude</Text>
+                    <Text style={styles.colBody}>{this.state.longitude}</Text>
+                  </View>
+                </View>
+              </View>
             </View>
+          </Container>
+        </PTRView>
+
+        <View style={styles.rowBtn}>
+          <View style={styles.colBtn}>
+            <TouchableOpacity
+              style={styles.logoutBtn}
+              onPress={() => this.attend()}>
+              {this.state.isAttend ? (
+                <ActivityIndicator color="#000" />
+              ) : (
+                <Text style={styles.logoutBtnText}>Presence</Text>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
-      </Container>
+      </SafeAreaView>
     );
   }
 }
@@ -148,6 +274,27 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 5,
     marginRight: 5,
+  },
+  col1box: {
+    borderColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 4,
+    minHeight: 100,
+    flex: 1,
+    padding: 10,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  colHead: {
+    color: '#fff',
+    flex: 2,
+    marginLeft: 10,
+  },
+  colBody: {
+    color: '#fff',
+    textAlign: 'right',
+    flex: 2,
+    marginRight: 10,
   },
   colBtn: {
     flex: 1,
