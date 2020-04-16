@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-did-mount-set-state */
 import React, {Component} from 'react';
 import {
@@ -82,9 +83,13 @@ export default class Home extends Component {
           .then(res => {
             if (!res.Error) {
               if (res.Type === 'IN') {
-                Alert.alert('Attend Successful', 'You Have Attend');
+                Alert.alert('Attend Successful', 'You Have Attend', [], {
+                  cancelable: true,
+                });
               } else {
-                Alert.alert('Out Successful', 'You Have logout');
+                Alert.alert('Out Successful', 'You Have logout', [], {
+                  cancelable: true,
+                });
               }
               const dataa = {
                 email: this.state.email,
@@ -130,12 +135,13 @@ export default class Home extends Component {
             name: res.Data.name,
             hour_in: res.Data.hour_in,
             hour_out: res.Data.hour_out,
-            latitude: res.Data.latitude,
-            longitude: res.Data.longitude,
-            ket: res.Data.ket,
+            latitude_in: res.Data.latitude_in,
+            longitude_in: res.Data.longitude_in,
+            latitude_out: res.Data.latitude_out,
+            longitude_out: res.Data.longitude_out,
           });
         } else {
-          Alert.alert('No Data', res.Message);
+          Alert.alert('No data available', res.Message, [], {cancelable: true});
           this.setState({
             dataattend: null,
           });
@@ -183,26 +189,48 @@ export default class Home extends Component {
                     <Text style={styles.colBody}>{this.state.day}</Text>
                   </View>
 
+                  <View style={{marginVertical: 10}} />
+
                   <View style={styles.row}>
                     <Text style={styles.colHead}>Hour IN</Text>
                     <Text style={styles.colBody}>{this.state.hour_in}</Text>
                   </View>
+
+                  <View style={{marginVertical: 5}} />
+
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Latitude</Text>
+                    <Text style={styles.colBody}>{this.state.latitude_in}</Text>
+                  </View>
+
+                  <View style={styles.row}>
+                    <Text style={styles.colHead}>Longitude</Text>
+                    <Text style={styles.colBody}>
+                      {this.state.longitude_in}
+                    </Text>
+                  </View>
+
+                  <View style={{marginVertical: 10}} />
 
                   <View style={styles.row}>
                     <Text style={styles.colHead}>Hour OUT</Text>
                     <Text style={styles.colBody}>{this.state.hour_out}</Text>
                   </View>
 
-                  <View style={{marginVertical: 10}} />
+                  <View style={{marginVertical: 5}} />
 
                   <View style={styles.row}>
                     <Text style={styles.colHead}>Latitude</Text>
-                    <Text style={styles.colBody}>{this.state.latitude}</Text>
+                    <Text style={styles.colBody}>
+                      {this.state.latitude_out}
+                    </Text>
                   </View>
 
                   <View style={styles.row}>
                     <Text style={styles.colHead}>Longitude</Text>
-                    <Text style={styles.colBody}>{this.state.longitude}</Text>
+                    <Text style={styles.colBody}>
+                      {this.state.longitude_out}
+                    </Text>
                   </View>
                 </View>
               </View>
