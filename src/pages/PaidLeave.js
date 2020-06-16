@@ -9,8 +9,8 @@ export default class Event extends Component {
         <View style={styles.layout}>
           <View style={styles.row}>
             <View style={styles.col1}>
-              <Text style={styles.textUrban}>URBAN</Text>
-              <Text style={styles.texrJakarta}>Event</Text>
+              <Text style={styles.textUrban}>Paid</Text>
+              <Text style={styles.texrJakarta}>Leave</Text>
             </View>
           </View>
         </View>

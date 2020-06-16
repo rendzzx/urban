@@ -10,7 +10,8 @@ import {_getData} from '@Component/StoreAsync';
 //page
 import Login from './pages/Login';
 import Home from './pages/Home';
-import Event from './pages/Event';
+import Overtime from './pages/Overtime';
+import PaidLeave from './pages/PaidLeave';
 import Account from './pages/Account';
 
 const TabIcon = ({focused, iconName}) => {
@@ -80,11 +81,20 @@ export default class Routes extends Component {
             />
 
             <Scene
-              key="Event"
-              component={Event}
+              key="overtime"
+              component={Overtime}
               navTransparent={true}
               hideNavBar={true}
-              iconName="event"
+              iconName="alarm_add"
+              icon={TabIcon}
+            />
+
+            <Scene
+              key="paidLeave"
+              component={PaidLeave}
+              navTransparent={true}
+              hideNavBar={true}
+              iconName="assignment_late"
               icon={TabIcon}
             />
 

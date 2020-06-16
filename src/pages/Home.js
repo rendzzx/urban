@@ -46,7 +46,7 @@ export default class Home extends Component {
       email: this.state.email,
       employee_id: this.state.employeeId,
     };
-    this.cekAttend(dataa);
+    // this.cekAttend(dataa);
   }
 
   attend = () => {
