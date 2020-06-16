@@ -124,8 +124,6 @@ export default class Login extends Component {
       _storeData('@User', res.email);
       _storeData('@Name', res.name);
       _storeData('@Group', res.group_cd);
-      _storeData('@AgentCd', res.agent_cd);
-      _storeData('@Debtor', res.debtor_acct);
 
       _storeData('@EmployeeId', res.employee_id);
       _storeData('@Handphone', res.handphone);

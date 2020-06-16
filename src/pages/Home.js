@@ -33,8 +33,6 @@ export default class Home extends Component {
       name: await _getData('@Name'),
       group: await _getData('@Group'),
       token: await _getData('@Token'),
-      debtor_acct: await _getData('@Debtor'),
-      agent_cd: await _getData('@AgentCd'),
 
       employeeId: await _getData('@EmployeeId'),
       hp: await _getData('@Handphone'),

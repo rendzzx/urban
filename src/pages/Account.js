@@ -32,8 +32,6 @@ export default class Account extends Component {
       name: await _getData('@Name'),
       group: await _getData('@Group'),
       token: await _getData('@Token'),
-      debtor_acct: await _getData('@Debtor'),
-      agent_cd: await _getData('@AgentCd'),
 
       employeeId: await _getData('@EmployeeId'),
       hp: await _getData('@Handphone'),
@@ -78,8 +76,6 @@ export default class Account extends Component {
     _removeData('@User');
     _removeData('@Name');
     _removeData('@Group');
-    _removeData('@AgentCd');
-    _removeData('@Debtor');
 
     _removeData('@EmployeeId');
     _removeData('@Handphone');
@@ -125,16 +121,6 @@ export default class Account extends Component {
           <View style={Style.row}>
             <Text style={styles.colHead}>Group</Text>
             <Text style={styles.colBody}>{this.state.group}</Text>
-          </View>
-
-          <View style={Style.row}>
-            <Text style={styles.colHead}>Debtor Account</Text>
-            <Text style={styles.colBody}>{this.state.debtor_acct}</Text>
-          </View>
-
-          <View style={Style.row}>
-            <Text style={styles.colHead}>Agent Code</Text>
-            <Text style={styles.colBody}>{this.state.agent_cd}</Text>
           </View>
 
           <View style={{marginVertical: 20}} />
